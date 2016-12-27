@@ -26,12 +26,13 @@ class Knn
   # Assume preprosessed, same amount of pixels
   def self.distance(image, other)
     raise ArgumentError, "Different size images" if image.columns != other.columns or image.rows != other.rows
-    x = other.rows
+    xstart = 58
+    xend = 215
     y = other.columns
 
     dist = 0
     y.times do |i|
-      x.times do |j|
+      (xstart..xend).each do |j|
         dist += Math.sqrt(((other.pixel_color(i,j).red & 255) - (image.pixel_color(i,j).red & 255))**2)
       end
     end
