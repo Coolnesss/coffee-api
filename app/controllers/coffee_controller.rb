@@ -1,10 +1,10 @@
 class CoffeeController < ApplicationController
 
   # Returns the state of coffee currently, one of:
-  # NONE, BREWING, LOW, HALF, FULL
+  # EMPTY, BREWING, LOW, HALF, FULL
   def state
     render json: {
-      state: "BREWING"
+      state: CoffeeState.state
     }, status: 200
   end
 end
