@@ -25,7 +25,7 @@ class Knn
     nearest_labels.group_by(&:itself).values.max_by(&:size).first
     # Tähän <distance, label> parit ja sitte vaa sort ja majority
     # distance_pairs =
-
+    #asd
   end
 
   # Assume preprosessed, same amount of pixels
