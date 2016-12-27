@@ -1,3 +1,4 @@
+require 'coffee_state'
 class CoffeeController < ApplicationController
 
   # Returns the state of coffee currently, one of:
