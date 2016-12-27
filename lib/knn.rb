@@ -9,8 +9,6 @@ class Knn
   K = 3
 
   def classify(image)
-    image = ImageList.new("lib/training_data/kahvi2.jpg").minify
-
     image_names = Dir.entries(DATA_PATH).reject{ |x|
       x == '.' or x == '..' or x == 'labels.json'
     }.map{|x| (DATA_PATH + x)}
