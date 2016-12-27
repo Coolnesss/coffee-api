@@ -10,5 +10,6 @@
   "dripping4.jpg": "LOW",
   "dripping5.jpg": "LOW",
   "dripping6.jpg": "HALF",
-  "dripping7.jpg": "HALF"
+  "dripping7.jpg": "HALF",
+  "empty.jpg": "EMPTY"
 }
