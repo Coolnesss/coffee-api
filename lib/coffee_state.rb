@@ -1,3 +1,5 @@
+require 'knn'
+
 class CoffeeState
   include Singleton
 
