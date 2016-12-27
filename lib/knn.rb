@@ -11,15 +11,18 @@ class Knn
   def classify(image)
     image = ImageList.new("lib/training_data/kahvi2.jpg").minify
 
-
     image_names = Dir.entries(DATA_PATH).reject{ |x|
       x == '.' or x == '..' or x == 'labels.json'
     }.map{|x| (DATA_PATH + x)}
-
     images = ImageList.new(*image_names).to_a.map(&:minify)
     labels = JSON.parse IO.read(LABEL_PATH)
     distances = images.to_a.map{|x| Knn.distance(image, x) }
+    sorted = distances.sort
+    sorted_indexes = distances.map{|e| sorted.index(e)}
+    nearest_labels = sorted_indexes[0..K-1].map{|x| labels[image_names[x].gsub("lib/training_data/","")]}
 
+    #return the most common label
+    nearest_labels.group_by(&:itself).values.max_by(&:size).first
     # Tähän <distance, label> parit ja sitte vaa sort ja majority
     # distance_pairs =
 
