@@ -28,7 +28,6 @@ class Knn
     y = other.columns
 
     dist = 0
-    binding.pry
     y.times do |i|
       (xstart..xend).each do |j|
         dist += Math.sqrt(((other.pixel_color(i,j).green & 255) - (image.pixel_color(i,j).green & 255))**2)
