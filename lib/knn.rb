@@ -16,9 +16,9 @@ class Knn
     labels = JSON.parse IO.read(LABEL_PATH)
     distances = images.to_a.map{|x| Knn.distance(image, x) }
     sorted = distances.sort
-    sorted_indexes = distances.map{|e| sorted.index(e)}
+    sorted_indexes = sorted.map{|e| distances.index(e)}
     nearest_labels = sorted_indexes[0..K-1].map{|x| labels[image_names[x].gsub("lib/training_data/","")]}
-
+    
     #return the most common label
     nearest_labels.group_by(&:itself).values.max_by(&:size).first
   end
