@@ -8,17 +8,14 @@ class Knn
   LABEL_PATH = 'lib/training_data/labels.json'
   K = 3
 
-  def classify(image)
-    image_names = Dir.entries(DATA_PATH).reject{ |x|
-      x == '.' or x == '..' or x == 'labels.json'
-    }.map{|x| (DATA_PATH + x)}
-    images = ImageList.new(*image_names).to_a.map(&:minify)
+  def classify(image, train_image_names = all_training_names)
+    images = ImageList.new(*train_image_names).to_a.map(&:minify)
     labels = JSON.parse IO.read(LABEL_PATH)
     distances = images.to_a.map{|x| Knn.distance(image, x) }
     sorted = distances.sort
     sorted_indexes = sorted.map{|e| distances.index(e)}
-    nearest_labels = sorted_indexes[0..K-1].map{|x| labels[image_names[x].gsub("lib/training_data/","")]}
-    
+    nearest_labels = sorted_indexes[0..K-1].map{|x| labels[train_image_names[x].gsub("lib/training_data/","")]}
+
     #return the most common label
     nearest_labels.group_by(&:itself).values.max_by(&:size).first
   end
@@ -31,11 +28,20 @@ class Knn
     y = other.columns
 
     dist = 0
+    binding.pry
     y.times do |i|
       (xstart..xend).each do |j|
-        dist += Math.sqrt(((other.pixel_color(i,j).red & 255) - (image.pixel_color(i,j).red & 255))**2)
+        dist += Math.sqrt(((other.pixel_color(i,j).green & 255) - (image.pixel_color(i,j).green & 255))**2)
       end
     end
     dist
+  end
+
+  private
+
+  def all_training_names
+    image_names = Dir.entries(DATA_PATH).reject{ |x|
+      x == '.' or x == '..' or x == 'labels.json'
+    }.map{|x| (DATA_PATH + x)}
   end
 end
