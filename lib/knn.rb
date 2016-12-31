@@ -26,12 +26,12 @@ class Knn
     xstart = 58
     xend = 215
     y = other.columns
+    imagepixels = image.get_pixels(0,xstart, 200, xend-xstart).map{|p| [p.red, p.green, p.blue]}
+    otherpixels = other.get_pixels(0,xstart, 200, xend-xstart).map{|p| [p.red, p.green, p.blue]}
 
     dist = 0
-    y.times do |i|
-      (xstart..xend).each do |j|
-        dist += Math.sqrt(((other.pixel_color(i,j).green & 255) - (image.pixel_color(i,j).green & 255))**2)
-      end
+    imagepixels.size.times do |i|
+      dist += Math.sqrt( ((imagepixels[i].sum / 3.0) - (otherpixels[i].sum / 3.0))**2)
     end
     dist
   end
