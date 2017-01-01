@@ -7,6 +7,8 @@ class Knn
   DATA_PATH = 'lib/training_data/'
   LABEL_PATH = 'lib/training_data/labels.json'
   K = 3
+  XSTART = 58
+  XEND = 215
 
   def classify(image, train_image_names = all_training_names)
     images = ImageList.new(*train_image_names).to_a.map(&:minify)
@@ -23,11 +25,10 @@ class Knn
   # Assume preprosessed, same amount of pixels
   def self.distance(image, other)
     raise ArgumentError, "Different size images" if image.columns != other.columns or image.rows != other.rows
-    xstart = 58
-    xend = 215
+
     y = other.columns
-    imagepixels = image.get_pixels(0,xstart, 200, xend-xstart).map{|p| [p.red, p.green, p.blue]}
-    otherpixels = other.get_pixels(0,xstart, 200, xend-xstart).map{|p| [p.red, p.green, p.blue]}
+    imagepixels = image.get_pixels(0,XSTART, 200, XEND-XSTART).map{|p| [p.red, p.green, p.blue]}
+    otherpixels = other.get_pixels(0,XSTART, 200, XEND-XSTART).map{|p| [p.red, p.green, p.blue]}
 
     dist = 0
     imagepixels.size.times do |i|
