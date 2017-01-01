@@ -13,17 +13,17 @@ class Knn
   def classify(image, train_image_names = all_training_names)
     images = ImageList.new(*train_image_names).to_a.map(&:minify)
     labels = JSON.parse IO.read(LABEL_PATH)
-    distances = images.to_a.map{|x| Knn.distance(image, x) }
+    distances = images.to_a.map{|x| distance(image, x) }
     sorted = distances.sort
     sorted_indexes = sorted.map{|e| distances.index(e)}
-    nearest_labels = sorted_indexes[0..K-1].map{|x| labels[train_image_names[x].gsub("lib/training_data/","")]}
-
+    nearest_labels = sorted_indexes[0, K]
+      .map{|x| labels[train_image_names[x].split("/").last]}
     #return the most common label
     nearest_labels.group_by(&:itself).values.max_by(&:size).first
   end
 
   # Assume preprosessed, same amount of pixels
-  def self.distance(image, other)
+  def distance(image, other)
     raise ArgumentError, "Different size images" if image.columns != other.columns or image.rows != other.rows
 
     y = other.columns
@@ -32,12 +32,16 @@ class Knn
 
     dist = 0
     imagepixels.size.times do |i|
-      dist += Math.sqrt( ((imagepixels[i].sum / 3.0) - (otherpixels[i].sum / 3.0))**2)
+      dist += euclidean_dist (imagepixels[i].sum / 3.0), (otherpixels[i].sum / 3.0)
     end
     dist
   end
 
   private
+
+  def euclidean_dist(x, y)
+    Math.sqrt((x - y)**2)
+  end
 
   def all_training_names
     image_names = Dir.entries(DATA_PATH).reject{ |x|

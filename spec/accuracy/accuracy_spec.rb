@@ -59,13 +59,12 @@ describe "Measuring accuracy using" do
 
   end
 
-  #cross-validating the zero-one error with leave one out -teqhinque and special-error
   after :all do
     puts
     puts "error rate for leave-one-out #{$LOO_error_rate}"
     puts "weighted error for leave-one-out #{$LOO_error}"
-    puts "error rate for leave-one-out #{$tfold_error_rate}"
-    puts "weighted error for leave-one-out #{$tfold_error}"
+    puts "error rate for two-fold #{$tfold_error_rate}"
+    puts "weighted error for two-fold #{$tfold_error}"
 
   end
 end
