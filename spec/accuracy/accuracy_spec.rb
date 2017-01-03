@@ -1,13 +1,16 @@
 require 'rails_helper'
-include Magick
+require 'libsvm'
+
 include CoffeeStates
+include Libsvm
+
 
 describe "Measuring accuracy using" do
 
   $LOO_error_rate = 0
   $LOO_error = 0
-  $tfold_error_rate = 0
-  $tfold_error = 0
+  $onefold_error_rate = 0
+  $onefold_error = 0
 
   DATA_PATH = 'lib/training_data/'
   LABEL_PATH = 'lib/training_data/labels.json'
@@ -16,25 +19,32 @@ describe "Measuring accuracy using" do
   }.map{|x| (DATA_PATH + x)}
   LABELS = JSON.parse IO.read(LABEL_PATH)
 
-  it "leave-one-out cross-validation", fast: false do
-    n_misclass = 0
-    IMAGE_NAMES.each do |test_image_name|
-      image = Magick::Image.read(test_image_name).first.minify
-      predicted = Knn.new.classify(image, IMAGE_NAMES.reject{|x| x == test_image_name})
-      true_value = LABELS[test_image_name.split("/").last]
-      #puts "#{predicted} vs #{true_value}"
+  it "k-fold cross-validation", slow: true do
 
-      if predicted != true_value
-        n_misclass += 1
-        # weighted error
-        $LOO_error += (CoffeeStates.const_get(predicted) - CoffeeStates.const_get(true_value)).abs
+
+    [:LINEAR, :POLY, :RBF, :SIGMOID].each do |type|
+
+      c = 30
+      eps = 0.0001
+      svm = Svm.new training_data: IMAGE_NAMES, kernel_type: KernelType.const_get(type), c: c, eps: eps
+
+
+      [23].each do |nfold|
+        result          = Model.cross_validation(svm.problem, svm.parameter, nfold)
+        predicted_name  = CoffeeStates.decode(result)
+        correct_labels = IMAGE_NAMES.map{|x| LABELS[x.split("/").last]}
+        correctness     = predicted_name.map.with_index { |p, i| p == correct_labels[i].to_sym }
+
+        correct = correctness.select { |x| x }
+        accuracy = correct.size.to_f / correctness.size
+        acc_str = "%.2f" % accuracy
+        puts "Accuracy[type = #{type}, nfold = #{nfold}] : #{acc_str}, eps: #{eps}, c: #{c}"
       end
     end
-    $LOO_error_rate = n_misclass.to_f / IMAGE_NAMES.size.to_f
-    $LOO_error /= IMAGE_NAMES.size.to_f
+
   end
 
-  it "2-fold cross-validation", fast: true do
+  it "20% of random data as test data", fast: true do
     shuffled = IMAGE_NAMES.shuffle
     # 80-20 split
     split_point = (shuffled.size * 0.8).to_i
@@ -51,10 +61,10 @@ describe "Measuring accuracy using" do
       if predicted != true_value
         n_misclass += 1
         # weighted error
-        $tfold_error += (CoffeeStates.const_get(predicted) - CoffeeStates.const_get(true_value)).abs
+        $onefold_error += (CoffeeStates.const_get(predicted) - CoffeeStates.const_get(true_value)).abs
       end
-      $tfold_error_rate = n_misclass.to_f / test_data.size.to_f
-      $tfold_error /= test_data.size.to_f
+      $onefold_error_rate = n_misclass.to_f / test_data.size.to_f
+      $onefold_error /= test_data.size.to_f
     end
 
   end
@@ -63,8 +73,8 @@ describe "Measuring accuracy using" do
     puts
     puts "error rate for leave-one-out #{$LOO_error_rate}"
     puts "weighted error for leave-one-out #{$LOO_error}"
-    puts "error rate for two-fold #{$tfold_error_rate}"
-    puts "weighted error for two-fold #{$tfold_error}"
+    puts "error rate for one-fold #{$onefold_error_rate}"
+    puts "weighted error for one-fold #{$onefold_error}"
 
   end
 end
