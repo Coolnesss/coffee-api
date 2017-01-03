@@ -1,4 +1,3 @@
-require 'rmagick'
 require 'libsvm'
 
 class Svm
