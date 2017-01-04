@@ -32,7 +32,7 @@ class Knn
   private
 
   def pixels_matrix(path)
-    pixels = IO.read("|convert #{path} rgb:-").unpack 'C*'
+    pixels = IO.read("|convert #{path} gray:-").unpack 'C*'
     # reshape array according to image size
     # (although in reality I would use NArray or NMatrix)
     width = IO.read("|identify -format '%w' #{path}").to_i
