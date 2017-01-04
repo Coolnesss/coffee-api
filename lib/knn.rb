@@ -7,9 +7,9 @@ class Knn
   XEND = 215
 
   def classify(image_name, train_image_names = all_training_names)
+    image = MiniMagick::Image.open(image_name)
+    images = train_image_names.map{|x| MiniMagick::Image.new(x)}
 
-    image = pixels_matrix(image_name).flatten
-    images = train_image_names.map{|x| pixels_matrix(x).flatten}#ImageList.new(*train_image_names).to_a.map(&:minify)
     labels = JSON.parse IO.read(LABEL_PATH)
     distances = images.map{|x| distance(image, x) }
     sorted = distances.sort
@@ -22,22 +22,16 @@ class Knn
 
   # Assume preprosessed, same amount of pixels
   def distance(image, other)
+    image_matrix = image.get_pixels
+    other_matrix = other.get_pixels
     dist = 0
     image.size.times do |i|
-      dist += euclidean_dist(image[i], other[i])
+      dist += euclidean_dist(image_matrix[i], other_matrix[i])
     end
     dist
   end
 
   private
-
-  def pixels_matrix(path)
-    pixels = IO.read("|convert #{path} gray:-").unpack 'C*'
-    # reshape array according to image size
-    # (although in reality I would use NArray or NMatrix)
-    width = IO.read("|identify -format '%w' #{path}").to_i
-    pixels.each_slice(width).to_a
-  end
 
   def euclidean_dist(x, y)
     Math.sqrt((x - y)**2)

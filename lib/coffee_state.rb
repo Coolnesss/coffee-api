@@ -15,7 +15,7 @@ class CoffeeState
   end
 
   def self.fetch_state
-    return Knn.new.classify "http://gurula.wtf:80/kahvi/kahvi.jpg"
+    return Knn.new.classify "http://gurula.wtf/kahvi/kahvi.jpg"
   end
 
 end
