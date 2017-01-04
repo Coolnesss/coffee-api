@@ -124,6 +124,7 @@ describe "Measuring accuracy using" do
     end
 
     after :all do
+      puts
       puts "Naive bayes error rate #{$error_rate}"
       puts "Naive bayes weighted error #{$error}"
     end
