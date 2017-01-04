@@ -41,6 +41,7 @@ class NaiveBayes
     images = train_image_names.map{|x| MiniMagick::Image.new(x)}
     labels = JSON.parse IO.read(LABEL_PATH)
     image_pixels = images.map(&:get_pixels)
+    labels_in_training_data = train_image_names.map{|x| labels[x.split("/").last]}
 
     @observations = train_image_names.size
 
@@ -62,8 +63,8 @@ class NaiveBayes
 
     # Find means
     @model.each do |k,v|
-      amt = labels.values.select{|x| x == k}.size
-      @model[k] = v.map{|x| [x[0] / amt, 0]}
+      amt = labels_in_training_data.select{|label| label == k}.size
+      @model[k] = v.map{|x| [x[0] / amt.to_f, 0]}
     end
 
     # SD
@@ -79,8 +80,8 @@ class NaiveBayes
 
     # SD
     @model.each do |k,v|
-      amt = labels.values.select{|x| x == k}.size
-      @model[k] = v.map{|x| [x[0], Math.sqrt(x[1] / amt)]}
+      amt = labels_in_training_data.select{|x| x == k}.size
+      @model[k] = v.map{|x| [x[0], Math.sqrt(x[1] / amt.to_f)]}
     end
   end
 
