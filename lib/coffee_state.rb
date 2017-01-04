@@ -1,4 +1,4 @@
-require 'knn'
+require 'naive_bayes'
 
 class CoffeeState
   include Singleton
