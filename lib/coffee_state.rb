@@ -15,7 +15,8 @@ class CoffeeState
   end
 
   def self.fetch_state
-    return Knn.new.classify "http://gurula.wtf/kahvi/kahvi.jpg"
+    # Knn.new.classify "http://gurula.wtf/kahvi/kahvi.jpg"
+    NaiveBayes.instance.classify "http://gurula.wtf/kahvi/kahvi.jpg"
   end
 
 end

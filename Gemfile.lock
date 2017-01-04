@@ -131,6 +131,7 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
+    rubystats (0.2.5)
     slop (3.6.0)
     spring (2.0.0)
       activesupport (>= 4.2)
@@ -170,6 +171,7 @@ DEPENDENCIES
   rest-client
   rmagick
   rspec-rails
+  rubystats
   spring
   spring-watcher-listen (~> 2.0.0)
   sqlite3

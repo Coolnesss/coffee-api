@@ -10,8 +10,28 @@ class NaiveBayes
     train
   end
 
-  def classify(image)
+  def classify(image_path)
+    image = MiniMagick::Image.open image_path
+    norm = Rubystats::NormalDistribution.new(10, 2)
+    pixels = image.get_pixels
 
+    max_score = -99999999999999
+    best_label = ""
+
+    @model.each do |label, distribution|
+      score = 0
+
+      distribution.each_with_index do |(mean, sd), index|
+        next if sd == 0 or Rubystats::NormalDistribution.new(mean, sd).pdf(pixels[index]) == 0
+        score += Math.log(Rubystats::NormalDistribution.new(mean, sd).pdf(pixels[index]))
+      end
+      
+      if score > max_score
+        max_score = score
+        best_label = label
+      end
+    end
+    best_label
   end
 
 
@@ -21,48 +41,40 @@ class NaiveBayes
     labels = JSON.parse IO.read(LABEL_PATH)
     image_pixels = images.map(&:get_pixels)
 
-    labels.values.uniq.each{|x| @model[x] = [{:MEAN => 0, :SD => 0}] * image_pixels.first.size }
+    labels.values.uniq.each{|x| @model[x] = Array.new(image_pixels.first.size) { [0,0] } }
 
     image_pixels.size.times do |i|
       image = images[i]
       pixels = image_pixels[i]
       label = labels[image.path.split("/").last]
       pixels.size.times do |j|
-        binding.pry
-        @model[label][j][:MEAN] += pixels[j]
-
+        # Sum the values
+        @model[label][j][0] += pixels[j]
       end
     end
-    binding.pry
 
+    # Find means
+    @model.each do |k,v|
+      amt = labels.values.select{|x| x == k}.size
+      @model[k] = v.map{|x| [x[0] / amt, 0]}
+    end
 
-    #sd
+    # SD
     image_pixels.size.times do |i|
       image = images[i]
       pixels = image_pixels[i]
+      label = labels[image.path.split("/").last]
 
-      pixel_array.size.times do |j|
-        pixel = pixels[j]
-        @model[labels[image.path.split("/").last]][j][0] += pixel
+      pixels.size.times do |j|
+        @model[label][j][1] += (pixels[j] - @model[label][j][0])**2
       end
     end
 
-    labels.values.uniq.each do |label|
-      label_image_names = {}
-      labels.select{|k,v| v == label}.map{|k,v| label_image_names[DATA_PATH+k] = v}
-      label_images = images.select{|i| label_image_names.keys.include? i.path }
-
-
-
-
-
-      label_images.each do |pic|
-        pixels = pic.get_pixels
-        mean = pixels.sum / pixels.size
-        sd = Math.sqrt( pixels.inject(0){|x| (x-mean)^2} / pixels.size)
-      end
+    # SD
+    @model.each do |k,v|
+      amt = labels.values.select{|x| x == k}.size
+      @model[k] = v.map{|x| [x[0], Math.sqrt(x[1] / amt)]}
     end
-
   end
 
 private

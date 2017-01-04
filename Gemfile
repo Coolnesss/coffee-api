@@ -24,11 +24,11 @@ gem 'rest-client'
 gem 'rb-libsvm'
 gem 'mini_magick'
 gem 'rmagick'
+gem 'rubystats'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
-  gem 'sqlite3'
   gem 'rspec-rails'
   gem 'pry-rails'
 end
