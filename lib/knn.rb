@@ -1,8 +1,4 @@
-require 'rmagick'
-
 class Knn
-
-  include Magick
 
   DATA_PATH = 'lib/training_data/'
   LABEL_PATH = 'lib/training_data/labels.json'
@@ -10,10 +6,12 @@ class Knn
   XSTART = 58
   XEND = 215
 
-  def classify(image, train_image_names = all_training_names)
-    images = ImageList.new(*train_image_names).to_a.map(&:minify)
+  def classify(image_name, train_image_names = all_training_names)
+
+    image = pixels_matrix(image_name).flatten
+    images = train_image_names.map{|x| pixels_matrix(x).flatten}#ImageList.new(*train_image_names).to_a.map(&:minify)
     labels = JSON.parse IO.read(LABEL_PATH)
-    distances = images.to_a.map{|x| distance(image, x) }
+    distances = images.map{|x| distance(image, x) }
     sorted = distances.sort
     sorted_indexes = sorted.map{|e| distances.index(e)}
     nearest_labels = sorted_indexes[0, K]
@@ -24,20 +22,22 @@ class Knn
 
   # Assume preprosessed, same amount of pixels
   def distance(image, other)
-    raise ArgumentError, "Different size images" if image.columns != other.columns or image.rows != other.rows
-
-    y = other.columns
-    imagepixels = image.get_pixels(0,XSTART, 200, XEND-XSTART).map{|p| [p.red, p.green, p.blue]}
-    otherpixels = other.get_pixels(0,XSTART, 200, XEND-XSTART).map{|p| [p.red, p.green, p.blue]}
-
     dist = 0
-    imagepixels.size.times do |i|
-      dist += euclidean_dist (imagepixels[i].sum / 3.0), (otherpixels[i].sum / 3.0)
+    image.size.times do |i|
+      dist += euclidean_dist(image[i], other[i])
     end
     dist
   end
 
   private
+
+  def pixels_matrix(path)
+    pixels = IO.read("|convert #{path} rgb:-").unpack 'C*'
+    # reshape array according to image size
+    # (although in reality I would use NArray or NMatrix)
+    width = IO.read("|identify -format '%w' #{path}").to_i
+    pixels.each_slice(width).to_a
+  end
 
   def euclidean_dist(x, y)
     Math.sqrt((x - y)**2)

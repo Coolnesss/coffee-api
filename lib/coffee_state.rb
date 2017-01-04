@@ -15,9 +15,7 @@ class CoffeeState
   end
 
   def self.fetch_state
-    knn = Knn.new
-    image = Magick::Image.read("http://gurula.wtf:80/kahvi/kahvi.jpg").first.minify
-    return knn.classify(image)
+    return Knn.new.classify "http://gurula.wtf:80/kahvi/kahvi.jpg"
   end
 
 end

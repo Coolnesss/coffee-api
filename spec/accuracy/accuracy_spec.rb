@@ -53,7 +53,7 @@ describe "Measuring accuracy using" do
 
     n_misclass = 0
     test_data.each do |test_image_name|
-      image = Magick::Image.read(test_image_name).first.minify
+      image = test_image_name
 
       predicted = Knn.new.classify(image, training_data)
       true_value = LABELS[test_image_name.split("/").last]
@@ -68,6 +68,24 @@ describe "Measuring accuracy using" do
     end
 
   end
+
+  it "leave-one-out cross-validation", fast: true do
+   n_misclass = 0
+   IMAGE_NAMES.each do |test_image_name|
+     predicted = Knn.new.classify(test_image_name, IMAGE_NAMES.reject{|x| x == test_image_name})
+     true_value = LABELS[test_image_name.split("/").last]
+     puts "#{predicted} vs #{true_value}"
+
+     if predicted != true_value
+       n_misclass += 1
+       # weighted error
+       $LOO_error += (CoffeeStates.const_get(predicted) - CoffeeStates.const_get(true_value)).abs
+     end
+   end
+   $LOO_error_rate = n_misclass.to_f / IMAGE_NAMES.size.to_f
+   $LOO_error /= IMAGE_NAMES.size.to_f
+ end
+
 
   after :all do
     puts
