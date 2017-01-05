@@ -11,7 +11,8 @@ module MiniMagick
         convert << path
       end
       convert.depth(8)
-      convert.crop("300x390+90+40")
+      convert.gravity("center")
+      convert.crop("260x300+50+0")
       convert.scale("150x195")
       convert << "RGB:-"
       content = convert.call

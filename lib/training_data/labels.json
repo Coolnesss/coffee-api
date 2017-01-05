@@ -4,7 +4,7 @@
   "kahvi3.jpg": "HALF",
   "kahvi4.jpg": "HALF",
   "dark.jpg": "DARK",
-  "dripping.jpg": "EMPTY",
+  "dripping.jpg": "LOW",
   "dripping2.jpg": "LOW",
   "dripping3.jpg": "LOW",
   "dripping4.jpg": "LOW",
@@ -31,5 +31,9 @@
   "newhalf2.jpg": "HALF",
   "newhalf4.jpg": "HALF",
   "newfull4.jpg": "FULL",
-  "newfull5.jpg": "FULL"
+  "newfull5.jpg": "FULL",
+  "newempty2.jpg": "EMPTY",
+  "newempty3.jpg": "EMPTY",
+  "newfull6.jpg": "FULL",
+  "newempty4.jpg": "EMPTY"
 }

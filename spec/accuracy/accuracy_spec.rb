@@ -111,7 +111,7 @@ describe "Measuring accuracy using" do
          predicted = NaiveBayes.instance.classify test_image_name
 
          true_value = LABELS[test_image_name.split("/").last]
-         #puts "#{predicted} vs #{true_value}"
+         puts "#{predicted} vs #{true_value}"
 
          if predicted != true_value
            n_misclass += 1
