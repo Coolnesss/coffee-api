@@ -13,7 +13,7 @@ module MiniMagick
       convert.depth(8)
       convert.gravity("center")
       convert.crop("260x300+50+0")
-      convert.scale("150x195")
+      #convert.scale("130x150")
       convert << "RGB:-"
       content = convert.call
       pixels = content.unpack("C*")
