@@ -2,19 +2,21 @@ class KMeans
 
   DATA_PATH = 'lib/training_data/'
   LABEL_PATH = 'lib/training_data/labels.json'
+  # Used to select first exemplars
+  LABELS = JSON.parse(IO.read(LABEL_PATH))
 
   attr_reader :clusters, :data_names, :data, :K
 
   def initialize(params = {data: all_training_names})
     @data = params[:data].map{|image_name| MiniMagick::Image.new(image_name).get_pixels}
     @data_names = params[:data]
-    @K = (params[:K] or 5)
+    @K = (params[:K] or LABELS.values.uniq.size)
     @clusters = Hash.new
   end
 
   def cluster
     previous_clustering = nil
-    centroids = random_centroids
+    centroids = first_centroids
 
     while previous_clustering != @clusters
       previous_clustering = @clusters
@@ -28,9 +30,9 @@ class KMeans
 
       # Move centroids to match new points
       centroids = @clusters.map{|cluster, image_indices| mean(image_indices)}
-
       puts @clusters
     end
+    @clusters
   end
 
   private
@@ -46,8 +48,13 @@ class KMeans
     mean_cluster
   end
 
-  def random_centroids
-     @data.sample(@K)
+  # Pick one of each class first
+  def first_centroids
+    #LABELS.to_a.uniq{|filename, label| label}.map{|filename, label| @data_names.index()}
+    LABELS.to_a
+      .uniq{|filename, label| label}
+      .map{|filename, label| DATA_PATH+filename}
+      .map{|path| @data[@data_names.index(path)]}
   end
 
   def distance(first, second)
