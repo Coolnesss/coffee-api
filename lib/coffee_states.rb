@@ -11,7 +11,7 @@ module CoffeeStates
   end
 
   def self.get_constant(value)
-    self.constants.select{|x| CoffeeStates.get_value(x) == value}.first
+    self.constants.find{|x| CoffeeStates.get_value(x) == value}
   end
 
   def self.encode(labels)

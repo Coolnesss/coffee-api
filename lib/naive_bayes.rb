@@ -14,7 +14,6 @@ class NaiveBayes
 
   def classify(image_path)
     image = MiniMagick::Image.open image_path
-    norm = Rubystats::NormalDistribution.new(10, 2)
     pixels = image.get_pixels
 
     max_score = -99999999999999
@@ -38,6 +37,10 @@ class NaiveBayes
 
 
   def train(train_image_names=all_training_names)
+    @model = {}
+    @observations = 0
+    @priori = Hash.new(0)
+
     images = train_image_names.map{|x| MiniMagick::Image.new(x)}
     labels = JSON.parse IO.read(LABEL_PATH)
     image_pixels = images.map(&:get_pixels)
@@ -48,7 +51,7 @@ class NaiveBayes
     train_image_names.each do |image_name|
       label = labels[image_name.split("/").last]
       @priori[label] += 1
-      @model[label] = Array.new(image_pixels.first.size) { [0,0] }
+      @model[label] = Array.new(image_pixels.first.size) { [0,0] } unless @model[label]
     end
 
     image_pixels.size.times do |i|

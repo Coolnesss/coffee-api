@@ -25,18 +25,17 @@ describe "Measuring accuracy using" do
 
       [:LINEAR, :POLY, :RBF, :SIGMOID].each do |type|
 
-        c = 30
+        c = 5
         eps = 0.0001
         svm = Svm.new training_data: IMAGE_NAMES, kernel_type: KernelType.const_get(type), c: c, eps: eps
 
-
-        [23].each do |nfold|
+        [5,10,15].each do |nfold|
           result          = Model.cross_validation(svm.problem, svm.parameter, nfold)
           predicted_name  = CoffeeStates.decode(result)
-          correct_labels = IMAGE_NAMES.map{|x| LABELS[x.split("/").last]}
+          correct_labels  = IMAGE_NAMES.map{|x| LABELS[x.split("/").last]}
           correctness     = predicted_name.map.with_index { |p, i| p == correct_labels[i].to_sym }
-
           correct = correctness.select { |x| x }
+
           accuracy = correct.size.to_f / correctness.size
           acc_str = "%.2f" % accuracy
           puts "Accuracy[type = #{type}, nfold = #{nfold}] : #{acc_str}, eps: #{eps}, c: #{c}"
@@ -109,7 +108,6 @@ describe "Measuring accuracy using" do
        IMAGE_NAMES.each do |test_image_name|
          NaiveBayes.instance.train IMAGE_NAMES.reject{|x| x == test_image_name}
          predicted = NaiveBayes.instance.classify test_image_name
-
          true_value = LABELS[test_image_name.split("/").last]
          puts "#{predicted} vs #{true_value}"
 
