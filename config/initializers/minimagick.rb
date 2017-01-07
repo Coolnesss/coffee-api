@@ -11,13 +11,14 @@ module MiniMagick
         convert << path
       end
       convert.depth(8)
-      convert.gravity("center")
-      convert.crop("260x300+50+0")
+      #convert.gravity("center")
+      convert.crop("390x200+10+190")
       #convert.scale("130x150")
       convert << "RGB:-"
       content = convert.call
       pixels = content.unpack("C*")
       pixels.each_slice(3).map{|x| x.sum / 3.0}
+      #Math.sqrt(0.299*x[0] + 0.587*x[1] + 0.114*x[2])
     end
   end
 end

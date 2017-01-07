@@ -2,12 +2,13 @@ class KMeans
 
   DATA_PATH = 'lib/training_data/'
   LABEL_PATH = 'lib/training_data/labels.json'
+  UNLABELLED_PATH = 'lib/unlabelled_training_data/'
   # Used to select first exemplars
   LABELS = JSON.parse(IO.read(LABEL_PATH))
 
   attr_reader :clusters, :data_names, :data, :K
 
-  def initialize(params = {data: all_training_names})
+  def initialize(params = {data: all_training_names + unlabelled_training_names})
     @data = params[:data].map{|image_name| MiniMagick::Image.new(image_name).get_pixels}
     @data_names = params[:data]
     @K = (params[:K] or LABELS.values.uniq.size)
@@ -34,6 +35,13 @@ class KMeans
     end
     @clusters
   end
+
+  def unlabelled_training_names
+    image_names = Dir.entries(UNLABELLED_PATH).reject{ |x|
+      x == '.' or x == '..'
+    }.map{|x| (UNLABELLED_PATH + x)}
+  end
+
 
   private
 
