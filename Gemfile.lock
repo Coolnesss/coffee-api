@@ -38,7 +38,9 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    ai4r (1.13)
     arel (7.1.4)
+    backports (3.6.8)
     builder (3.2.2)
     byebug (9.0.6)
     coderay (1.1.1)
@@ -69,8 +71,12 @@ GEM
     minitest (5.10.1)
     netrc (0.11.0)
     nio4r (1.2.1)
+    nmatrix (0.2.3)
+      packable (~> 1.3, >= 1.3.5)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
+    packable (1.3.8)
+      backports
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -161,9 +167,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ai4r
   byebug
   listen (~> 3.0.5)
   mini_magick
+  nmatrix
   pry-rails
   puma (~> 3.0)
   rails (~> 5.0.0, >= 5.0.0.1)
