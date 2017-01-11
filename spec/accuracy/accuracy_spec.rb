@@ -14,10 +14,33 @@ describe "Measuring accuracy using" do
 
   DATA_PATH = 'lib/training_data/'
   LABEL_PATH = 'lib/training_data/labels.json'
+  REGRESSION_LABELS_PATH = 'lib/training_data/regression_labels.json'
   IMAGE_NAMES = Dir.entries(DATA_PATH).reject{ |x|
-    x == '.' or x == '..' or x == 'labels.json'
+    x == '.' or x == '..' or x.include? '.json'
   }.map{|x| (DATA_PATH + x)}
   LABELS = JSON.parse IO.read(LABEL_PATH)
+
+  describe "Linear Regression", lm: true do
+
+    it "k-fold cross-validation" do
+      REGRESSION_LABELS = JSON.parse IO.read(REGRESSION_LABELS_PATH)
+      linear_model = LinearModel.instance
+      regression_names = IMAGE_NAMES.reject{|x| x.include? 'dark' or x.include? "kahvi.jpg"}
+      loss = 0
+      highest_error=-999
+      regression_names.each do |test_image_name|
+        linear_model.train(regression_names.reject{|x| x==test_image_name})
+        predicted = linear_model.predict(test_image_name)
+        true_value = REGRESSION_LABELS[test_image_name.split("/").last]
+        puts "#{predicted} VS #{true_value}"
+        current_loss = (predicted - true_value).abs
+        loss += current_loss
+        highest_error = current_loss if current_loss > highest_error
+      end
+      puts "Average error in cups: #{loss/regression_names.size.to_f}"
+      puts "Highest_error: #{highest_error}"
+    end
+  end
 
   describe "SVM", svm: true do
 
