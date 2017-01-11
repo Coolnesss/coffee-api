@@ -34,6 +34,7 @@ describe "Measuring accuracy using" do
         true_value = REGRESSION_LABELS[test_image_name.split("/").last]
         puts "#{predicted} VS #{true_value}"
         current_loss = (predicted - true_value).abs
+        p test_image_name if current_loss > 2
         loss += current_loss
         highest_error = current_loss if current_loss > highest_error
       end
