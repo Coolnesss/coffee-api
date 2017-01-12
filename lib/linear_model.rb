@@ -31,7 +31,7 @@ class LinearModel
     obs = MiniMagick::Image.open(image_path).get_good_pixels
     result = @coefs[0] + (@coefs.drop(1).zip(obs).inject(0){|sum,(x,y)| sum + (x*y)})
     return 0 if result < 0
-    result
+    result.round05
   end
 
   def all_training_names
