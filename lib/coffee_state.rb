@@ -1,4 +1,4 @@
-require 'naive_bayes'
+require 'linear_model'
 
 class CoffeeState
   include Singleton
@@ -15,8 +15,7 @@ class CoffeeState
   end
 
   def self.fetch_state
-    # Knn.new.classify "http://gurula.wtf/kahvi/kahvi.jpg"
-    NaiveBayes.instance.classify "http://gurula.wtf/kahvi/kahvi.jpg"
+    LinearModel.instance.predict "http://gurula.wtf/kahvi/kahvi.jpg"
   end
 
 end
