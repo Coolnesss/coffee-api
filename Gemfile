@@ -27,6 +27,8 @@ gem 'rmagick'
 gem 'rubystats'
 gem 'ai4r'
 gem 'nmatrix'
+gem 'ruby-spark'
+gem 'oj'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

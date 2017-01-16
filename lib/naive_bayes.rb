@@ -92,7 +92,7 @@ private
 
   def all_training_names
     image_names = Dir.entries(DATA_PATH).reject{ |x|
-      x == '.' or x == '..' or x == 'labels.json'
+      x == '.' or x == '..' or x.include? 'json'
     }.map{|x| (DATA_PATH + x)}
   end
 
