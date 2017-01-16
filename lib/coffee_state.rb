@@ -3,6 +3,8 @@ require 'linear_model'
 class CoffeeState
   include Singleton
 
+  IMAGE_URL = "http://gurula.wtf/kahvi/kahvi.jpg"
+
   @previous_value = nil
   @previous_time = 1.minute.ago
 
@@ -15,7 +17,6 @@ class CoffeeState
   end
 
   def self.fetch_state
-    LinearModel.instance.predict "http://gurula.wtf/kahvi/kahvi.jpg"
+    LinearModel.instance.predict IMAGE_URL
   end
-
 end
