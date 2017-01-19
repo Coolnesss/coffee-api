@@ -2,25 +2,20 @@ class DataSource
 
   include Singleton
 
-  DATA_PATH = 'lib/training_data/'
-  LABEL_PATH = 'lib/training_data/regression_labels.json'
-  LABELS = JSON.parse(IO.read(LABEL_PATH))
-
   def initialize
     @data = {}
-    image_data = all_training_names.map{|name| MiniMagick::Image.new(name).get_good_pixels}
-    all_training_names.each_with_index do |name, index|
-      @data[name] = image_data[index]
+    Sample.all.each do |sample|
+      sample_url = [sample.image.url, sample.image.path].max_by(&:length)
+      sample_url = "https:" + sample_url if Rails.env.development? or Rails.env.production?
+      @data[sample.id] = MiniMagick::Image.open(sample_url).get_good_pixels
     end
   end
 
-  def fetch_data_and_labels(image_names)
-    [image_names.map{|name| @data[name]}, image_names.map{|name| LABELS[name.split("/").last]}]
+  def fetch_data_and_labels(image_ids)
+    [image_ids.map{|id| @data[id]}, image_ids.map{|id| Sample.find(id).label}]
   end
 
-  def all_training_names
-    image_names = Dir.entries(DATA_PATH).reject{ |x|
-      x == '.' or x == '..' or x.include? 'json'
-    }.map{|x| (DATA_PATH + x)}
+  def all_training_data
+    fetch_data_and_labels Sample.ids
   end
 end

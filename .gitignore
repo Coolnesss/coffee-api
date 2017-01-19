@@ -26,3 +26,4 @@
 !.elasticbeanstalk/*.global.yml
 
 lib/unlabelled_training_data/*
+public/system/*

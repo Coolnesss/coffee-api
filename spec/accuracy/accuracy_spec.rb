@@ -1,47 +1,38 @@
 require 'rails_helper'
 require 'libsvm'
+require 'helpers/file_helper'
 
 include CoffeeStates
 include Libsvm
 
 
 describe "Measuring accuracy using" do
-
-  $LOO_error_rate = 0
-  $LOO_error = 0
-  $onefold_error_rate = 0
-  $onefold_error = 0
-
-  DATA_PATH = 'lib/training_data/'
-  LABEL_PATH = 'lib/training_data/labels.json'
-  REGRESSION_LABELS_PATH = 'lib/training_data/regression_labels.json'
-  IMAGE_NAMES = Dir.entries(DATA_PATH).reject{ |x|
-    x == '.' or x == '..' or x.include? '.json'
-  }.map{|x| (DATA_PATH + x)}
-  LABELS = JSON.parse IO.read(LABEL_PATH)
-  REGRESSION_LABELS = JSON.parse IO.read(REGRESSION_LABELS_PATH)
-
   describe "Linear Regression", lm: true do
 
+    before :all do
+      add_train_data_to_db
+    end
+
+    after :all do
+      Sample.destroy_all
+    end
+
     it "k-fold cross-validation" do
-
       linear_model = LinearModel.instance
-      regression_names = IMAGE_NAMES.reject{|x| x.include? 'dark' or x.include? "kahvi.jpg"}
       loss = 0
-      highest_error=-999
+      highest_error = -999
 
-      regression_names.each do |test_image_name|
-        linear_model.train *DataSource.instance.fetch_data_and_labels(regression_names.reject{|x| x == test_image_name})
-        predicted = linear_model.predict(test_image_name)
-        true_value = REGRESSION_LABELS[test_image_name.split("/").last]
+      Sample.all.each do |sample|
+        linear_model.train *DataSource.instance.fetch_data_and_labels(Sample.ids.reject{|id| id == sample.id})
+        predicted = linear_model.predict([sample.image.url, sample.image.path].max_by(&:length))
 
-        puts "#{predicted} VS #{true_value}"
+        puts "#{predicted} VS #{sample.label}"
 
-        current_loss = (predicted - true_value).abs
+        current_loss = (predicted - sample.label).abs
         loss += current_loss
         highest_error = current_loss if current_loss > highest_error
       end
-      puts "Average error in cups: #{loss/regression_names.size.to_f}"
+      puts "Average error in cups: #{loss/Sample.count}"
       puts "Highest_error: #{highest_error}"
     end
   end
