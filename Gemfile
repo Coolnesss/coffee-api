@@ -26,7 +26,6 @@ gem 'mini_magick'
 gem 'rmagick'
 gem 'rubystats'
 gem 'nmatrix'
-gem 'ruby-spark'
 gem 'paperclip'
 gem 'aws-sdk', '~> 2.3'
 
