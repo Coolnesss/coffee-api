@@ -28,7 +28,6 @@ gem 'rubystats'
 gem 'ai4r'
 gem 'nmatrix'
 gem 'ruby-spark'
-gem 'oj'
 gem 'paperclip'
 gem 'aws-sdk', '~> 2.3'
 

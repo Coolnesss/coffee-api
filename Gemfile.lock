@@ -94,7 +94,6 @@ GEM
       packable (~> 1.3, >= 1.3.5)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
-    oj (2.18.0)
     packable (1.3.8)
       backports
     paperclip (5.1.0)
@@ -220,7 +219,6 @@ DEPENDENCIES
   listen (~> 3.0.5)
   mini_magick
   nmatrix
-  oj
   paperclip
   pry-rails
   puma (~> 3.0)
