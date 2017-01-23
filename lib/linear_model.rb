@@ -1,4 +1,5 @@
 require 'nmatrix'
+require 'data_source'
 
 class LinearModel
   include Singleton
