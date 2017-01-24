@@ -10,9 +10,9 @@ class LinearModel
   end
 
   def train(data, labels)
-    @data = data.map{|x| [1.0] + x}
+    data = data.map{|x| [1.0] + x}
     labels = NMatrix.new [labels.size, 1], labels, dtype: :float64
-    m = NMatrix.new [@data.size, @data.first.size], @data.flatten, dtype: :int32
+    m = NMatrix.new [data.size, data.first.size], data.flatten, dtype: :int32
     @coefs = apply_formula(m, labels)
   end
 
