@@ -19,5 +19,5 @@
 
 # Learn more: http://github.com/javan/whenever
 every 1.minute do
-  runner "CoffeeNotifier.notify"
+  runner "CoffeeNotifier.instance.notify"
 end
