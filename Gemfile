@@ -28,6 +28,8 @@ gem 'rubystats'
 gem 'nmatrix'
 gem 'paperclip'
 gem 'aws-sdk', '~> 2.3'
+gem 'fcm'
+gem 'whenever', :require => false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
