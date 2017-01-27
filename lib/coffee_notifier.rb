@@ -1,3 +1,4 @@
+require 'singleton'
 class CoffeeNotifier
   include Singleton
   @@ok = true
