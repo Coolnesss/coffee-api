@@ -3,8 +3,7 @@ require 'json'
 class CoffeeNotifier
 
   # Strong bubble gum to get state of server without retraining model
-  $url = "localhost:3000/state" if Rails.env.development?
-  $url = "http://coffeeapi.g7xd2rhrfs.eu-central-1.elasticbeanstalk.com/state" if Rails.env.production?
+  $url = "http://coffeeapi.g7xd2rhrfs.eu-central-1.elasticbeanstalk.com/state"
   $file_path = ".coffee_state"
 
   # To avoid spamming notifications,
