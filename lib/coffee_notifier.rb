@@ -1,5 +1,6 @@
 require 'coffee_state'
 require 'last_notified'
+require 'firebase'
 
 class CoffeeNotifier
 
@@ -32,6 +33,6 @@ class CoffeeNotifier
     elsif state <= 3
       LastNotified.instance.ok = true
     end
-    
+
   end
 end
