@@ -58,6 +58,7 @@ GEM
     crono (1.1.2)
       activerecord (>= 4.0)
       activesupport (>= 4.0)
+    daemons (1.2.4)
     diff-lcs (1.2.5)
     domain_name (0.5.20161129)
       unf (>= 0.0.5, < 1.0.0)
@@ -210,6 +211,7 @@ DEPENDENCIES
   aws-sdk (~> 2.3)
   byebug
   crono
+  daemons
   fcm
   haml
   listen (~> 3.0.5)

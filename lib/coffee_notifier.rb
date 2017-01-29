@@ -1,4 +1,6 @@
 require 'coffee_state'
+require 'last_notified'
+
 class CoffeeNotifier
 
   # Strong bubble gum to get state of server without retraining model
@@ -18,17 +20,18 @@ class CoffeeNotifier
   #  end
   #end
 
-  @ok = true
-
   def perform(*args)
+    ok = LastNotified.instance.ok
     state = CoffeeState.state
-    Rails.logger.info "Current state was #{state}, with previous state #{@ok}"
-    if state >= 10 and @ok
+    Rails.logger.info "Current state was #{state}, with previous state #{ok}"
+
+    if state >= 10 and ok
       Firebase.send state
-      @ok = false
+      LastNotified.instance.ok = false
       Rails.logger.info "Notification sent"
     elsif state <= 3
-      @ok = true
+      LastNotified.instance.ok = true
     end
+    
   end
 end

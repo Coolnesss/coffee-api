@@ -32,6 +32,8 @@ gem 'fcm'
 gem 'crono'
 gem 'sinatra', '2.0.0.beta2', require: nil
 gem 'haml'
+gem 'daemons'
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
