@@ -4,4 +4,10 @@ Rails.application.routes.draw do
   post '/sample', to: 'coffee#sample', as: 'sample'
   get '/state', to: 'coffee#state', as: 'state'
   root 'coffee#state'
+  require 'crono/web'
+    Crono::Web.use Rack::Auth::Basic do |username, password|
+      username == ENV["CRONO_USERNAME"] && password == ENV["CRONO_PASSWORD"]
+    end
+    mount Crono::Web, at: '/crono'
+
 end
