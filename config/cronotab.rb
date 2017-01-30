@@ -14,4 +14,4 @@ require 'coffee_notifier'
 #
 # Crono.perform(TestJob).every 2.days, at: '15:30'
 #
-Crono.perform(CoffeeNotifier).every 1.minute
+Crono.perform(CoffeeNotifier).with_options(truncate_log: 100).every 1.minute
