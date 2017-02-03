@@ -5,10 +5,15 @@ class DataSource
   def initialize
     @data = {}
     Sample.all.each do |sample|
-      sample_url = [sample.image.url, sample.image.path].max_by(&:length)
-      sample_url = "https:" + sample_url if Rails.env.development? or Rails.env.production?
+      #sample_url = [sample.image.url, sample.image.path].max_by(&:length)
+      sample_url = sample.image.path
+      sample_url = "https:" + sample.image.url if Rails.env.production?
       @data[sample.id] = MiniMagick::Image.open(sample_url).get_good_pixels
     end
+  end
+
+  def good_pixels_of_image(image_path)
+    return MiniMagick::Image.open(sample_url).get_good_pixels if Rails.env.production?
   end
 
   def fetch_data_and_labels(image_ids)

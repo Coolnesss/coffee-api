@@ -12,8 +12,9 @@ class CoffeeController < ApplicationController
   def sample
     sample_params = params.require(:sample).permit(:label)
     sample = Sample.new(sample_params)
-    sample.image_from_gurula #TODO if old, don't save
+    sample.image_from_gurula
     if sample.save
+      LinearModel.instance.update_coefs sample.image.path, sample.label # TODO don't block on S3 retrieval
       render json: {
         label: sample_params[:label]
       }, status: 200

@@ -95,6 +95,7 @@ GEM
     minitest (5.10.1)
     multi_xml (0.6.0)
     mustermann (1.0.0.beta2)
+    nbayes (0.1.1)
     netrc (0.11.0)
     nio4r (1.2.1)
     nmatrix (0.2.3)
@@ -216,6 +217,7 @@ DEPENDENCIES
   haml
   listen (~> 3.0.5)
   mini_magick
+  nbayes
   nmatrix
   paperclip
   pg (~> 0.18.1)

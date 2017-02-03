@@ -18,12 +18,28 @@ class LinearModel
 
   def predict(image_path)
     obs = MiniMagick::Image.open(image_path).get_good_pixels
-    result = @coefs[0] + (@coefs.drop(1).zip(obs).inject(0){|sum,(x,y)| sum + (x*y)})
+    result = predict_formula obs
     return 0 if result < 0
+    binding.pry
     result.round05
   end
 
+  # Stochastic gradient descent for online updating for the coefs
+  def update_coefs(sample_path, label)
+    sample = [1] + MiniMagick::Image.open(sample_path).get_good_pixels if Rails.env.development?
+    sample = [1] + MiniMagick::Image.open(sample_path).get_good_pixels if Rails.env.production?
+    step_size = 0.001
+    output = predict_formula sample
+    @coefs = @coefs.map.with_index do |coef, index|
+      coef + step_size * (label - output) * sample[index]
+    end
+  end
+
   private
+
+  def predict_formula(sample)
+    @coefs[0] + (@coefs.drop(1).zip(sample).inject(0){|sum,(x,y)| sum + (x*y)})
+  end
 
   def apply_formula(matrix, labels)
     (matrix.transpose.dot(matrix)).inverse.dot(matrix.transpose).dot(labels)
