@@ -20,7 +20,6 @@ class LinearModel
     obs = MiniMagick::Image.open(image_path).get_good_pixels
     result = predict_formula obs
     return 0 if result < 0
-    binding.pry
     result.round05
   end
 
@@ -28,7 +27,7 @@ class LinearModel
   def update_coefs(sample_path, label)
     sample = [1] + MiniMagick::Image.open(sample_path).get_good_pixels if Rails.env.development?
     sample = [1] + MiniMagick::Image.open(sample_path).get_good_pixels if Rails.env.production?
-    step_size = 0.001
+    step_size = 0.00001
     output = predict_formula sample
     @coefs = @coefs.map.with_index do |coef, index|
       coef + step_size * (label - output) * sample[index]
