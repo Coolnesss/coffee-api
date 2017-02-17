@@ -1,0 +1,66 @@
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+<script>
+  var samplelist = [];
+  if (!localStorage["token"]) {
+    var text = prompt("prompt", "textbox's intial text");
+    localStorage["token"] = text;
+  }
+
+
+  function update(method) {
+    $("#picture").remove();
+
+    let id = samplelist[0].id;
+
+    $.ajax({
+      url: "http://localhost:3000/samples/" + id,
+      type: method,
+      data: { sample: { verified: true }}
+    });
+
+    samplelist.shift();
+
+    if (samplelist.length === 0) {
+      $("#pic").append("<h4>No more pics :(</h4>");
+      return;
+    }
+
+    var pic =
+    "<figure id=\"picture\"><img src=\"" + samplelist[0].url + "\" /><figcaption>Label: " + samplelist[0].label + "</figcaption></figure>";
+
+    $("#pic").append(pic);
+  }
+
+  $( document ).ready(function() {
+    $.getJSON( "http://localhost:3000/samples.json", (samples) => {
+
+      if (samples.samples.length === 0) {
+        $("#pic").append("<h4>No more pics :(</h4>")
+        return
+      }
+
+      samplelist = samples.samples;
+      var pic =
+      "<figure id=\"picture\"><img src=\"" + samplelist[0].url + "\" /><figcaption>Label: " + samplelist[0].label + "</figcaption></figure>";
+      $("#pic").append(pic);
+      $("#pic").prepend("<a href=\"#\" onclick=\"update('PUT')\">Verify</a>");
+      $("#pic").prepend("<a style=\"padding-right:20px;\" href=\"#\" onclick=\"update('DELETE')\">Remove</a>");
+    });
+  });
+
+
+
+</script>
+
+<style>
+  a {
+    cursor: pointer;
+  }
+</style>
+
+<h1>Approve or disprove</h1>
+
+<div id="pic">
+
+</div>
