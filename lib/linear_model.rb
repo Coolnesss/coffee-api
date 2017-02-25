@@ -6,7 +6,8 @@ class LinearModel
   attr_reader :coefs, :data
 
   def initialize
-    train *DataSource.instance.all_training_data
+    data, labels = *DataSource.new(:get_good_pixels).all_training_data
+    train *delete_dark_images(data, labels)
   end
 
   def train(data, labels)
@@ -42,6 +43,16 @@ class LinearModel
 
   def apply_formula(matrix, labels)
     (matrix.transpose.dot(matrix)).inverse.dot(matrix.transpose).dot(labels)
+  end
+
+  def delete_dark_images(data, labels)
+    labels.count.times do |i|
+      if labels[i] == -100
+        data.delete_at(i)
+        labels.delete_at(i)
+      end
+    end
+    [data, labels]
   end
 
 end

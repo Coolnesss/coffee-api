@@ -21,9 +21,8 @@ describe "Measuring accuracy using" do
       linear_model = LinearModel.instance
       loss = 0
       highest_error = -999
-
-      Sample.all.each do |sample|
-        linear_model.train *DataSource.instance.fetch_data_and_labels(Sample.ids.reject{|id| id == sample.id})
+      Sample.all.reject{|x| x.image_file_name.include? "dark"}.each do |sample|
+        linear_model.train *DataSource.new(:get_good_pixels).fetch_data_and_labels(Sample.ids.reject{|id| id == sample.id or Sample.find(id).label == -100})
         predicted = linear_model.predict([sample.image.url, sample.image.path].max_by(&:length))
 
         puts "#{predicted} VS #{sample.label}"
@@ -133,7 +132,6 @@ describe "Measuring accuracy using" do
            n_misclass += 1
            # weighted error
            $error += (CoffeeStates.const_get(predicted) - CoffeeStates.const_get(true_value)).abs
-         end
        end
        $error_rate = n_misclass.to_f / IMAGE_NAMES.size.to_f
        $error /= IMAGE_NAMES.size.to_f
@@ -145,4 +143,39 @@ describe "Measuring accuracy using" do
       puts "Naive bayes weighted error #{$error}"
     end
   end
+end
+
+  describe "Naive Bayes for dark/light classification", nb_dark: true do
+
+    before :all do
+      add_train_data_to_db
+    end
+
+    after :all do
+      Sample.destroy_all
+    end
+
+    $error_rate = 0
+    $error = 0
+
+    it "leave-one-out cross-validation" do
+       n_misclass = 0
+       IMAGE_NAMES.each do |test_image_name|
+         predicted = Lights.instance.classify test_image_name
+         true_value = DARK_LABELS[test_image_name.split("/").last]
+         puts "#{predicted} vs #{true_value} #{test_image_name}"
+
+         if predicted != true_value
+           n_misclass += 1
+         end
+       end
+       $error_rate = n_misclass.to_f / IMAGE_NAMES.size.to_f
+    end
+
+    after :all do
+      puts
+      puts "Naive bayes error rate #{$error_rate}"
+    end
+  end
+
 end

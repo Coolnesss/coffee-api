@@ -36,5 +36,8 @@
   "newfull7.jpg": 13.5,
   "reallynewfull2.jpg": 13.5,
   "reallynewlow.jpg": 5,
-  "reallynewhalf.jpg": 7
+  "reallynewhalf.jpg": 7,
+  "dark.jpg": -100,
+  "dark2.jpg": -100,
+  "dark3.jpg": -100
 }

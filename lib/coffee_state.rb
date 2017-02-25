@@ -1,4 +1,5 @@
 require 'linear_model'
+require 'lights'
 
 class CoffeeState
   include Singleton
@@ -17,6 +18,7 @@ class CoffeeState
   end
 
   def self.fetch_state
-    LinearModel.instance.predict IMAGE_URL
+    return LinearModel.instance.predict IMAGE_URL if Lights.instance.classify(IMAGE_URL) == "LIGHT"
+    "DARK"
   end
 end

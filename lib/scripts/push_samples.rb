@@ -4,7 +4,7 @@ LABELS = JSON.parse(IO.read(LABEL_PATH))
 
 def all_training_names
   image_names = Dir.entries(DATA_PATH).reject{ |x|
-    x == '.' or x == '..' or x.include? 'json' or x.include? "dark"
+    x == '.' or x == '..' or x.include? 'json'
   }.map{|x| (DATA_PATH + x)}
 end
 

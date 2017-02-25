@@ -35,5 +35,9 @@
   "newempty2.jpg": "EMPTY",
   "newempty3.jpg": "EMPTY",
   "newfull6.jpg": "FULL",
-  "newempty4.jpg": "EMPTY"
+  "newempty4.jpg": "EMPTY",
+  "reallynewlow.jpg": "LOW",
+  "reallynewhalf.jpg": "HALF",
+  "reallynewfull2.jpg": "FULL",
+  "newfull7.jpg": "FULL"
 }

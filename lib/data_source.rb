@@ -1,14 +1,14 @@
 class DataSource
 
-  include Singleton
+  #include Singleton
 
-  def initialize
+  def initialize(which_pixels)
     @data = {}
-    Sample.all.each do |sample|
+    Sample.where(verified: true).each do |sample|
       #sample_url = [sample.image.url, sample.image.path].max_by(&:length)
       sample_url = sample.image.path
       sample_url = "https:" + sample.image.url if Rails.env.production?
-      @data[sample.id] = MiniMagick::Image.open(sample_url).get_good_pixels
+      @data[sample.id] = MiniMagick::Image.open(sample_url).send(which_pixels)
     end
   end
 
