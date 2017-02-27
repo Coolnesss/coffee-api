@@ -18,12 +18,9 @@ class Lights
   end
 
   def classify image_path
-    obs = MiniMagick::Image.open(image_path).get_dark_pixels # rescue binding.pry
+    obs = MiniMagick::Image.open(image_path).get_dark_pixels
     classified = @bayes.classify(obs)
-    return "DARK" if classified["DARK"] > 0.53
+    return "DARK" if classified["DARK"] and classified["DARK"] > 0.53
     "LIGHT"
   end
-
-
-
 end

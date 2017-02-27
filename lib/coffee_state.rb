@@ -18,7 +18,6 @@ class CoffeeState
   end
 
   def self.fetch_state
-    return LinearModel.instance.predict IMAGE_URL if Lights.instance.classify(IMAGE_URL) == "LIGHT"
-    "DARK"
+    HybridClassifier.instance.classify IMAGE_URL
   end
 end
