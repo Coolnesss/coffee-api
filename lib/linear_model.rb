@@ -6,8 +6,7 @@ class LinearModel
   attr_reader :coefs, :data
 
   def initialize
-    data, labels = *DataSource.new(:get_good_pixels).all_training_data
-    train *delete_dark_images(data, labels)
+    train *delete_dark_images(*DataSource.instance.all_training_data)
   end
 
   def train(data, labels)
@@ -22,17 +21,6 @@ class LinearModel
     result = predict_formula obs
     return 0 if result < 0
     result.round05
-  end
-
-  # Stochastic gradient descent for online updating for the coefs
-  def update_coefs(sample_path, label)
-    sample = [1] + MiniMagick::Image.open(sample_path).get_good_pixels if Rails.env.development?
-    sample = [1] + MiniMagick::Image.open(sample_path).get_good_pixels if Rails.env.production?
-    step_size = 0.00001
-    output = predict_formula sample
-    @coefs = @coefs.map.with_index do |coef, index|
-      coef + step_size * (label - output) * sample[index]
-    end
   end
 
   private

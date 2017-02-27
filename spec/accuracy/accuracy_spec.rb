@@ -22,8 +22,8 @@ describe "Measuring accuracy using" do
       loss = 0
       highest_error = -999
       Sample.all.reject{|x| x.image_file_name.include? "dark"}.each do |sample|
-        linear_model.train *DataSource.new(:get_good_pixels).fetch_data_and_labels(Sample.ids.reject{|id| id == sample.id or Sample.find(id).label == -100})
-        predicted = linear_model.predict([sample.image.url, sample.image.path].max_by(&:length))
+        linear_model.train *DataSource.instance.fetch_data_and_labels(Sample.ids.reject{|id| id == sample.id or Sample.find(id).label == -100}, :good)
+        predicted = linear_model.predict sample.image.path
 
         puts "#{predicted} VS #{sample.label}"
 
@@ -160,16 +160,23 @@ end
 
     it "leave-one-out cross-validation" do
        n_misclass = 0
-       IMAGE_NAMES.each do |test_image_name|
-         predicted = Lights.instance.classify test_image_name
-         true_value = DARK_LABELS[test_image_name.split("/").last]
-         puts "#{predicted} vs #{true_value} #{test_image_name}"
+       Sample.all.each do |test_sample|
+
+         data, labels = *DataSource
+            .instance
+            .fetch_data_and_labels(Sample.ids.reject{|x| x == test_sample}, :dark)
+
+         Lights.instance.train data, labels
+
+         predicted = Lights.instance.classify test_sample.image.path
+         true_value = test_sample.label
+         puts "#{predicted} vs #{true_value}"
 
          if predicted != true_value
            n_misclass += 1
          end
        end
-       $error_rate = n_misclass.to_f / IMAGE_NAMES.size.to_f
+       $error_rate = n_misclass.to_f / Sample.count.to_f
     end
 
     after :all do
