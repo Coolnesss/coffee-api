@@ -1,17 +1,12 @@
+require 'linear_model'
+require 'lights'
+
 class HybridClassifier
   include Singleton
 
-  def initialize
-    train *DataSource.instance.all_training_data
-  end
-
-  def train(data, labels)
-    LinearModel.instance
-    Lights.instance
-  end
-
   def classify(image_path)
-
+    return "NO POT" if Lights.instance.classify(image_path) == "DARK"
+    LinearModel.instance.predict image_path
   end
 
 end
