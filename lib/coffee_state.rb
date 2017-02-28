@@ -1,5 +1,6 @@
 require 'linear_model'
 require 'lights'
+require 'hybrid_classifier'
 
 class CoffeeState
   include Singleton
