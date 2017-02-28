@@ -26,8 +26,9 @@ class DataSource
     end
   end
 
-  def all_training_data(which_pixels = :good)
-    fetch_data_and_labels Sample.ids, which_pixels
+  def all_training_data(which_pixels = :good, no_dark = true)
+    return fetch_data_and_labels Sample.where(verified: true).reject{|s| s.label == -100}.map(&:id), which_pixels if no_dark
+    fetch_data_and_labels Sample.where(verified: true).ids, which_pixels
   end
 
   private

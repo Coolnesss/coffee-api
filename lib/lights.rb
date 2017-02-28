@@ -5,7 +5,7 @@ class Lights
   include Singleton
 
   def initialize
-    train *DataSource.instance.all_training_data(:dark)
+    train *DataSource.instance.all_training_data(:dark, false)
   end
 
   def train(data, labels)
